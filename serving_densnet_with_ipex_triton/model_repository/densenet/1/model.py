@@ -90,8 +90,8 @@ class TritonPythonModel:
         
         print('Optimizing model in IPEX:')
         try:
-          model = ipex.optimize(model)  
-          with torch.no_grad():
+          model = ipex.optimize(model, dtype=torch.bfloat16)  
+          with torch.no_grad(), torch.cpu.amp.autocast():
               model = torch.jit.trace(model, image_s)
               self.model = torch.jit.freeze(model)
         except Exception as e: print(e)
